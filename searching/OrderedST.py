@@ -9,7 +9,7 @@ from fundamentals.LinkedList import LinkedList
 from math import floor
 
 
-class OrderedSymbolTable(object):
+class OrderedST(object):
     def __init__(self):
         self.keys = []
         self.values = []
@@ -77,8 +77,11 @@ class OrderedSymbolTable(object):
     def contains(self, key):
         return self.get(key) is not None
 
-    def keys(self):
-        return self.keys
+    def entries(self):
+        entries = []
+        for i in range(self.size()):
+            entries.append((self.keys[i], self.values[i]))
+        return entries
 
     def is_empty(self):
         return self.size() == 0
@@ -110,7 +113,7 @@ class OrderedSymbolTable(object):
 
 
 if __name__ == '__main__':
-    st = OrderedSymbolTable()
+    st = OrderedST()
     st.put(4, 'four')
     st.put(5, 'five')
     st.put(6, 'six')

@@ -37,17 +37,20 @@ class SymbolTable(object):
                 return False
 
     def put(self, key, value):
-        node = self.get(key)
+        node = self._get(key)
         if node:
             node.item = (key, value)
         else:
             self.items.insertAtEnd((key, value))
 
-    def get(self, key):
+    def _get(self, key):
         node = self.items.head
         while node and node.item[0] != key:
             node = node.next
-        return node.item[1] if node else None
+        return node
+
+    def get(self, key):
+        return self._get(key).item[1]
 
     def delete(self, key):
         if self._move_key_to_head(key):
@@ -56,12 +59,13 @@ class SymbolTable(object):
     def contains(self, key):
         return self.get(key) is not None
 
-    def keys(self):
-        keys = []
+    def entries(self):
+        entries = []
         node = self.items.head
         while node:
-            keys.append(node.item)
+            entries.append(node.item)
             node = node.next
+        return entries
 
     def is_empty(self):
         return self.size() == 0

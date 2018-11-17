@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-from Node import Node
+from RedBlackNode import RedBlackNode
 
 
-class BinarySearchTree(object):
+class RedBlackBST(object):
     def __init__(self):
         self.root = None
 
@@ -30,15 +30,55 @@ class BinarySearchTree(object):
     def _size(self, node):
         return node.n if node is not None else 0
 
+    def _is_red(self, node):
+        return node.red if node else False
+
+    def _rotate_left(self, parent):
+        new_parent = parent.right
+        parent.right = new_parent.left
+        new_parent.left = parent
+
+        new_parent.red = parent.red
+        parent.red = True
+
+        new_parent.n = parent.n
+        parent.n = self._size(parent.left) + self._size(parent.right) + 1
+        return new_parent
+
+    def _rotate_right(self, parent):
+        new_parent = parent.left
+        parent.left = new_parent.right
+        new_parent.right = parent
+
+        new_parent.red = parent.red
+        parent.red = True
+
+        new_parent.n = parent.n
+        parent.n = self._size(parent.left) + self._size(parent.right) + 1
+        return new_parent
+
+    def _flip_colors(self, parent):
+        parent.red = True
+        parent.left.red = False
+        parent.right.red = False
+
     def _put(self, parent, key, value):
         if parent is None:
-            return Node(key, value, 1)
+            return RedBlackNode(key, value, 1, True)
         if key < parent.key:
             parent.left = self._put(parent.left, key, value)
         elif key > parent.key:
             parent.right = self._put(parent.right, key, value)
         else:
             parent.value = value
+
+        if self._is_red(parent.right) and not self._is_red(parent.left):
+            parent = self._rotate_left(parent)
+        if self._is_red(parent.left) and self._is_red(parent.left.left):
+            parent = self._rotate_right(parent)
+        if self._is_red(parent.left) and self._is_red(parent.right):
+            self._flip_colors(parent)
+
         parent.n = self._size(parent.left) + self._size(parent.right) + 1
         return parent
 
@@ -49,7 +89,7 @@ class BinarySearchTree(object):
             return self._get(parent.left, key)
         elif key > parent.key:
             return self._get(parent.right, key)
-        return parent
+        return parent.value
 
     def _min(self, parent):
         if parent.left is None:
@@ -164,15 +204,16 @@ class BinarySearchTree(object):
 
     def put(self, key, value):
         self.root = self._put(self.root, key, value)
+        self.root.red = False
 
     def get(self, key):
-        return self._get(self.root, key).value
+        return self._get(self.root, key)
 
     def min(self):
-        return self._min(self.root).key
+        return self._min(self.root).value
 
     def max(self):
-        return self._max(self.root).key
+        return self._max(self.root).value
 
     def floor(self, key):
         return self._floor(self.root, key)
@@ -202,76 +243,87 @@ class BinarySearchTree(object):
 
 
 if __name__ == '__main__':
-    bst = BinarySearchTree()
-    bst.put(4, 'four')
-    bst.put(5, 'five')
-    bst.put(6, 'six')
-    bst.put(1, 'one')
-    bst.put(9, 'nine')
-    bst.put(15, 'fifteen')
-    bst.put(2, 'two')
-    bst.put(3, 'three')
-    bst._print()
-    print(bst.get(2))
-    print(bst.min())
-    print(bst.max())
-    print(bst.floor(11))
-    print(bst.floor(5))
-    print(bst.ceil(11))
-    print(bst.ceil(5))
+    rbt = RedBlackBST()
+    rbt.put(1, 'one')
+    rbt.put(2, 'two')
+    rbt.put(3, 'three')
+    rbt.put(4, 'four')
+    rbt.put(5, 'five')
+    rbt.put(6, 'six')
+    rbt.put(9, 'nine')
+    rbt.put(15, 'fifteen')
+    rbt._print()
+
+    rbt = RedBlackBST()
+    rbt.put(4, 'four')
+    rbt.put(5, 'five')
+    rbt.put(6, 'six')
+    rbt.put(1, 'one')
+    rbt.put(9, 'nine')
+    rbt.put(15, 'fifteen')
+    rbt.put(2, 'two')
+    rbt.put(3, 'three')
+    rbt._print()
+    print(rbt.get(2))
+    print(rbt.min())
+    print(rbt.max())
+    print(rbt.floor(11))
+    print(rbt.floor(5))
+    print(rbt.ceil(11))
+    print(rbt.ceil(5))
 
     for input, expected in [(0, 1), (5, 6), (20, None)]:
-        actual = bst.select(input)
+        actual = rbt.select(input)
         print(f"\n{input} -> {actual} == {expected}: {actual == expected}")
 
     for input, expected in [(1, 0), (6, 5), (0, 0)]:
-        actual = bst.rank(input)
+        actual = rbt.rank(input)
         print(f"\n{input} -> {actual} == {expected}: {actual == expected}")
 
     print('\ninitial')
-    bst._print()
+    rbt._print()
 
     print('\ndelete_min()')
-    bst.delete_min()
-    bst._print()
+    rbt.delete_min()
+    rbt._print()
 
     print('\ndelete_max()')
-    bst.delete_max()
-    bst._print()
+    rbt.delete_max()
+    rbt._print()
 
-    print('\nbst.delete(6)')
-    bst.delete(6)
-    bst._print()
+    print('\nrbt.delete(6)')
+    rbt.delete(6)
+    rbt._print()
 
-    print('\nbst.put(6, \'six\')')
-    bst.put(6, 'six')
-    bst._print()
+    print('\nrbt.put(6, \'six\')')
+    rbt.put(6, 'six')
+    rbt._print()
 
-    print('\nbst.put(6, \'six again\')')
-    bst.put(6, 'six again')
-    bst._print()
+    print('\rbt.put(6, \'six again\')')
+    rbt.put(6, 'six again')
+    rbt._print()
 
-    print('\nbst.delete(15)')
-    bst.delete(15)
-    bst._print()
+    print('\nrbt.delete(15)')
+    rbt.delete(15)
+    rbt._print()
 
-    print('\nbst.put(15, \'fifteen\')')
-    bst.put(15, 'fifteen')
-    bst._print()
+    print('\nrbt.put(15, \'fifteen\')')
+    rbt.put(15, 'fifteen')
+    rbt._print()
 
-    print('\nbst.delete(4)')
-    bst.delete(4)
-    bst._print()
+    print('\nrbt.delete(4)')
+    rbt.delete(4)
+    rbt._print()
 
-    print('\nbst.put(4, \'four\')')
-    bst.put(4, 'four')
-    bst._print()
+    print('\nrbt.put(4, \'four\')')
+    rbt.put(4, 'four')
+    rbt._print()
 
     print('\nOrdered Print')
-    bst.ordered_print()
+    rbt.ordered_print()
 
-    print('\nbst.range(3, 10)')
-    bst._print()
-    nodes = bst.range(3, 10)
+    print('\nrbt.range(3, 10)')
+    rbt._print()
+    nodes = rbt.range(3, 10)
     for node in nodes:
         print(node)
