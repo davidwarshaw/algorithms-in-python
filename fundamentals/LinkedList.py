@@ -24,6 +24,12 @@ class LinkedList(object):
             node = node.next
         return concatenated
 
+    def __iter__(self):
+        node = self.head
+        while node:
+            yield node
+            node = node.next
+
     def size(self):
         node = self.head
         count = 0
@@ -117,3 +123,12 @@ if __name__ == '__main__':
     a.removeFromBegining()
     a.removeFromBegining()
     print(a)
+
+    a.insertAtEnd(1)
+    a.insertAtEnd(2)
+    a.insertAtEnd(3)
+    print(a)
+    for item in a:
+        print(item)
+    for item in a:
+        print(item)

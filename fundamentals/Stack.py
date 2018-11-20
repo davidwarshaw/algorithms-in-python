@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from LinkedList import LinkedList
+from fundamentals.LinkedList import LinkedList
 
 
 class Stack(object):

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from LinkedList import LinkedList
+from fundamentals.LinkedList import LinkedList
 
 
 class Queue(object):
@@ -17,7 +17,7 @@ class Queue(object):
     def dequeue(self):
         dequeued = self.items.head
         self.items.removeFromBegining()
-        return dequeued
+        return dequeued.item
 
     def is_empty(self):
         return self.items.size() == 0
