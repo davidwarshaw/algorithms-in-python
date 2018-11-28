@@ -50,7 +50,8 @@ class SymbolTable(object):
         return node
 
     def get(self, key):
-        return self._get(key).item[1]
+        node = self._get(key)
+        return node.item[1] if node else None
 
     def delete(self, key):
         if self._move_key_to_head(key):

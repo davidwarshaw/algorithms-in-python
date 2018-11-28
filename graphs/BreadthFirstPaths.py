@@ -5,6 +5,7 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath('..'))
 
+from fundamentals.Stack import Stack
 from fundamentals.Queue import Queue
 
 from Graph import Graph
@@ -42,11 +43,11 @@ class BreadthFirstPaths(object):
         return self.marked[v]
 
     def path_to(self, v):
-        if not has_path_to(v):
+        if not self.has_path_to(v):
             return None
         stack = Stack()
         x = v
-        while x != s:
+        while x != self.s:
             stack.push(x)
             x = self.edge_to[x]
         return stack.items
