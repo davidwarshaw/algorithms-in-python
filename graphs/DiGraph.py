@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.abspath('..'))
 from fundamentals.Bag import Bag
 
 
-class Graph(object):
+class DiGraph(object):
 
     def __init__(self, v):
         self.v = v
@@ -33,7 +33,6 @@ class Graph(object):
 
     def add_edge(self, v, w):
         self.vertices[v].add(w)
-        self.vertices[w].add(v)
         self.e += 1
 
     def adjacent_vertices(self, v):
@@ -62,9 +61,16 @@ class Graph(object):
                     count += 1
         return int(round(count / 2))
 
+    def reverse(self):
+        reversed = DiGraph(self.v)
+        for v in range(self.num_vertices()):
+            for w in self.adjacent_vertices(v):
+                reversed.add_edge(w, v)
+        return reversed
+
 
 if __name__ == '__main__':
-    a = Graph(13)
+    a = DiGraph(13)
     a.add_edge(0, 5)
     a.add_edge(4, 3)
     a.add_edge(0, 1)
@@ -92,3 +98,7 @@ if __name__ == '__main__':
     b = a.num_self_loops()
     print('a.num_self_loops()')
     print(b)
+
+    b = a.reverse()
+    print('a.num_self_loops()')
+    b._print()

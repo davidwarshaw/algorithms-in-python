@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import math
+
 from SymbolGraph import SymbolGraph
 from BreadthFirstPaths import BreadthFirstPaths
 
@@ -49,7 +51,16 @@ class GraphProperties(object):
                 return self.g.name(v)
 
     def girth(self):
-        pass
+        lengths = []
+        for v in range(self.g.num_vertices()):
+            self.bfs = BreadthFirstPaths(self.g, v)
+            for w in range(self.g.num_vertices()):
+                path = self.bfs.path_to(w)
+                cycle = v in self.g.adjacent_vertices(w)
+                if path and cycle:
+                    length = path.size() + 1
+                    lengths.append(length)
+        return min(lengths) if len(lengths) > 0 else math.inf
 
 
 if __name__ == '__main__':
